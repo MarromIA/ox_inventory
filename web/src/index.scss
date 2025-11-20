@@ -1,0 +1,1211 @@
+@use "sass:map";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+$mainColor: rgba(99, 2, 2, 0.65);
+$textColor: #c1c2c5;
+$mainFont: Inter;
+
+$secondaryColor: rgba(121, 54, 54, 0.35);
+$secondaryColorHighlight: rgba(85, 5, 13, 0.55);
+$secondaryColorLight: rgba(148, 8, 8, 0.60);
+$secondaryColorDark: rgba(24, 1, 1, 0.75);
+
+/* ============================================
+   COLORES DE RAREZA
+   ============================================ */
+$rarityNormal: #630202a6;
+$rarityComun: #1eff00;
+$rarityRaro: #0070dd;
+$rarityEpico: #a335ee;
+$rarityLegendario: #ff8000;
+$rarityAncestral: #e6cc80;
+$rarityEncantado: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #00ff00, #0080ff, #8000ff);
+$rarityDivino: #e0c675ff;
+$rarityMaldito: #381818ff;
+$rarityRojo: #ff0000;
+$rarityRosa: #ff69b4;
+$rarityOro: #ffd700;
+$rarityPlata: #c0c0c0;
+$rarityBronce: #cd7f32;
+$rarityCobre: #b87333;
+$rarityAzul: #0099ff;
+$rarityVerde: #00ff66;
+$rarityCyan: #00ffff;
+$rarityMagenta: #ff00ff;
+$rarityAmarillo: #ffff00;
+$rarityNaranja: #ff6600;
+$rarityPurpura: #9900ff;
+$rarityLima: #99ff00;
+$rarityVioleta: #8a2be2;
+$rarityMaroon: #800000;
+$rarityNegro: #000000;
+$rarityBlanco: #ffffff;
+/* ============================================
+   ACTIVAR/DESACTIVAR BORDES DE RAREZA
+   ============================================ */
+$enable-rarity-borders: true;
+$rarity-border-width: 2px;
+$rarity-border-style: solid;
+/* ============================================
+   ACTIVAR/DESACTIVAR DEGRADADO DE LABEL POR RAREZA
+   ============================================ */
+$enable-rarity-label-gradient: true;
+$rarity-label-min-tier: 'normal'; /* Opciones: 'normal', 'comun', 'raro', 'epico', 'legendario', 'ancestral', 'encantado', 'divino', 'maldito' */
+$rarity-tiers: (    /* Jerarquía de rarezas (NO MODIFICAR - usado internamente) */
+  'normal': 1,
+  'comun': 2,
+  'raro': 3,
+  'epico': 4,
+  'legendario': 5,
+  'ancestral': 6,
+  'divino': 7,
+  'maldito': 8,
+  'encantado': 9
+);
+$gradient-top-opacity: 0.05;
+$gradient-bottom-opacity: 0.7;
+
+$gridCols: 5;
+$gridRows: 4;
+$gridSize: 9vh;
+$gridGap: 4px;
+$containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});
+
+/* ============================================
+   CSS
+   ============================================ */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  background: none !important;
+  overflow: hidden !important;
+  user-select: none;
+}
+
+#root {
+  height: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+  font-family: $mainFont;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.app-wrapper {
+  height: 100%;
+  width: 100%;
+  color: white;
+}
+
+.inventory-background {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to left, #240d0d17 25%, transparent 100%);
+  position: relative;
+  z-index: 0;
+}
+/* ============================================
+   MENÚ CONTEXTUAL - DISEÑO MEJORADO
+   ============================================ */
+.context-menu-list {
+  min-width: fit-content; /* 🔧 Se ajusta al contenido */
+  background-color: transparent; /* Sin fondo en el contenedor */
+  padding: 0;
+  gap: 4px;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* 🔧 Estira los items al ancho del contenedor */
+}
+
+.context-menu-item {
+  min-width: 70px; /* 🔧 Ancho mínimo más pequeño */
+  width: auto; /* 🔧 Se ajusta al texto */
+  height: 32px; /* 🔧 Altura más pequeña (antes 40px) */
+  padding: 0 16px; /* 🔧 Padding horizontal para espacio del texto */
+  
+  background-color: rgba(99, 2, 2, 0.55); /* 🔧 Color rojo oscuro similar a tu imagen */
+  outline: none;
+  border: none;
+  border-radius: 4px; /* 🔧 Esquinas redondeadas */
+  
+  color: rgba(255, 255, 255, 0.95); /* 🔧 Texto blanco */
+  font-weight: 500; /* 🔧 Menos bold que antes */
+  font-size: 14px; /* 🔧 Tamaño de letra */
+  font-family: $mainFont;
+  text-transform: uppercase;
+  text-align: left; /* 🔧 Alineado a la izquierda */
+  
+  display: flex;
+  justify-content: flex-start; /* 🔧 Contenido alineado a la izquierda */
+  align-items: center;
+  
+  cursor: pointer;
+  transition: all 150ms ease;
+  
+  /* Sombra sutil */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+  &:active {
+    transform: translateY(1px); /* 🔧 Efecto al clickear */
+  }
+  
+  &:hover {
+    background-color: rgba(120, 5, 5, 0.95); /* 🔧 Rojo más claro al hover */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Menús anidados (submenús) */
+.context-menu-item[data-nested] {
+  justify-content: space-between; /* 🔧 Espacio entre texto y flecha */
+  
+  /* Flecha del submenú */
+  span {
+    margin-left: 12px;
+    font-size: 10px;
+    opacity: 0.7;
+  }
+}
+
+.tooltip-description {
+  padding-top: 5px;
+}
+
+.tooltip-markdown > p {
+  margin: 0;
+}
+
+button:active {
+  transform: translateY(3px);
+}
+
+.item-drag-preview {
+  width: 7.7vh;
+  height: 7.7vh;
+  z-index: 1;
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 7vh;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.inventory-wrapper {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+.inventory-control {
+  display: flex;
+  background: $secondaryColor;
+  padding: 5px;
+  border-radius: 4px;
+
+  .inventory-control-wrapper {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    gap: 5px;
+  }
+
+  .inventory-control-input {
+    transition: 200ms;
+    padding: 2px 10px;
+    width: 8vh;
+    height: 3.05vh;
+    border-radius: 3px;
+    font-family: $mainFont;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    border: none;
+    color: #fff;
+    background-color: $mainColor;
+    &:focus-within {
+      background-color: $mainColor;
+      filter: brightness(1.2);
+    }
+  }
+
+  .inventory-control-button {
+    font-size: 14px;
+    color: #fff;
+    fill: #fff;
+    background-color: $mainColor;
+    transition: 200ms;
+    border-radius: 3px;
+    border: none;
+    text-transform: uppercase;
+    font-family: $mainFont;
+    width: auto;
+    min-width: 40px; /* 🔧 Ancho mínimo */
+    padding: 0px 10px;
+    height: 3.5vh;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    svg {
+      fill: white;
+    }
+
+    &:hover {
+      background-color: $mainColor;
+      filter: brightness(1.2);
+      cursor: pointer;
+    }
+  }
+
+  .inventory-control-button-icon {
+    height: 3.5vh;
+    width: 4.5vh;
+    padding: 7px 0px;
+  }
+
+  .inventory-control-button-exit {
+    &:hover {
+      background-color: rgba(153, 42, 42, 0.55) !important;
+      filter: brightness(1) !important; /* Override del filter */
+    }
+  }
+
+  .inventory-control-button-info {
+    &:hover {
+      background-color: rgba(141, 105, 58, 0.55) !important;
+      filter: brightness(1) !important;
+    }
+  }
+
+  .inventory-control-button-use {
+    min-width: 6vh;
+    &:hover {
+      background-color: rgba(68, 141, 58, 0.55) !important;
+      filter: brightness(1) !important;
+    }
+  }
+
+  .inventory-control-button-give {
+    min-width: 6vh;
+    &:hover {
+      background-color: rgba(135, 141, 58, 0.55) !important;
+      filter: brightness(1) !important;
+    }
+  }
+
+  .inventory-control-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .left-button {
+    display: flex;
+    align-items: center;
+  }
+
+  .right-controls {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 5px;
+  }
+
+}
+
+.useful-controls-dialog {
+  background-color: $secondaryColor;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: $textColor;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 4px;
+  gap: 16px;
+}
+
+.useful-controls-dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.useful-controls-dialog-title {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+}
+
+.useful-controls-dialog-close {
+  width: 25px;
+  height: 25px;
+  padding: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  fill: $textColor;
+  &:hover {
+    background-color: #8d3a3aa6;
+    cursor: pointer;
+  }
+}
+
+.useful-controls-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.021);
+}
+
+.useful-controls-button {
+  position: absolute !important;
+  bottom: 25px;
+  right: 25px;
+  transition: 200ms !important;
+  border: none;
+  color: white;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  fill: white;
+  border-radius: 5% !important;
+  background-color: $secondaryColor !important;
+  &:hover {
+    background-color: $secondaryColorDark !important;
+    cursor: pointer;
+  }
+}
+
+.useful-controls-exit-button {
+  position: absolute !important;
+  right: 8px;
+  top: 8px;
+  border-radius: 2.5% !important;
+  color: grey !important;
+}
+/* ============================================
+   INVENTORY GRID
+   ============================================ */
+.inventory-grid-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding-top: 10px;
+  pointer-events: auto;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.inventory-grid-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  margin-bottom: 0;
+  min-height: 30px;
+  p {
+    font-size: 26px;
+    font-weight: 500;
+    font-family: $mainFont;
+    color: $textColor;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);
+    line-height: 1.2;
+    margin: 0;
+  }
+  p:last-child {
+    font-size: 26px;
+    color: $textColor;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);
+    line-height: 1.2;
+    margin: 0;
+  }
+}
+
+.inventory-grid-header-wrapper p:last-child {
+  font-size: 16px;
+  color: $textColor;
+  font-weight: 600;
+}
+
+.inventory-grid-container {
+  display: grid;
+  height: calc(4 * (9vh + 0.22vh) + 4 * 2px); /* $containerSize */
+  grid-template-columns: repeat(5, 9vh); /* $gridCols, $gridSize */
+  grid-auto-rows: 9.22vh; /* $gridSize + 0.22vh */
+  gap: 2px; /* $gridGap */
+  overflow-y: scroll;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ============================================
+   INVENTORY SLOTS
+   ============================================ */
+.inventory-slot {
+  background-color: $secondaryColor;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 2.5%;
+  image-rendering: -webkit-optimize-contrast;
+  position: relative;
+  background-size: 5vh;
+  color: $textColor;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: inset;
+  border-width: 1px;
+}
+
+.inventory-slot-label-box {
+  background-color: $mainColor;
+  color: $textColor;
+  text-align: center;
+  border-bottom-left-radius: 0.25vh;
+  border-bottom-right-radius: 0.25vh;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  border-top-style: inset;
+  border-top-width: 1px;
+}
+
+.inventory-slot-label-text {
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 3px;
+  font-weight: 400;
+  font-family: $mainFont;
+  font-size: 12px;
+}
+
+.inventory-slot-number {
+  background-color: rgba(255, 255, 255, 0.411);
+  color: black;
+  height: 12px;
+  border-top-left-radius: 0.25vh;
+  border-bottom-right-radius: 0.25vh;
+  padding: 3px;
+  font-size: 12px;
+  font-family: $mainFont;
+  font-weight: 600;
+}
+
+.item-slot-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  p {
+    font-size: 12px;
+  }
+}
+
+.item-slot-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+/* ============================================
+   WRAPPER DE HOTSLOT Y GRID
+   ============================================ */
+.inventory-content-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.inventory-grid-container {
+  display: grid;
+  height: $containerSize;
+  grid-template-columns: repeat($gridCols, $gridSize);
+  grid-auto-rows: $gridSize + 0.22vh;
+  gap: $gridGap;
+  overflow-y: scroll;
+}
+
+.inventory-hotslots-wrapper {
+  position: absolute !important;
+  left: -150px !important;
+  top: 0px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+  width: auto !important;
+}
+
+.inventory-hotslots-title-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  pointer-events: none;
+  width: fit-content;
+  transform: translateX(-35px);
+}
+
+.inventory-hotslots-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+.inventory-hotslots-title {
+  background-color: rgba(85, 1, 1, 0);
+  color: $textColor;
+  text-align: center;
+  padding: 0;
+  border-radius: 4px;
+  font-family: $mainFont;
+  font-size: 26px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  pointer-events: none;
+  border: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);
+  margin: 0;
+  line-height: 1;
+  white-space: nowrap; 
+}
+
+.inventory-hotslots-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  pointer-events: none !important;
+  width: 9vh;
+}
+
+.inventory-hotslots-container .inventory-slot {
+  width: 9vh !important;
+  height: 9.22vh !important;
+  min-width: 9vh !important;
+  min-height: 9.22vh !important;
+  max-width: 9vh !important;
+  max-height: 9.22vh !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  background-size: 5vh !important;
+  pointer-events: auto !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.inventory-hotslots-container .inventory-slot .item-slot-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  height: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  pointer-events: auto !important;
+}
+
+.item-hotslot-header-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  flex-shrink: 0 !important;
+}
+
+.label-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
+  }
+
+  p {
+    font-size: 26px;
+    font-weight: 500;
+    font-family: $mainFont;
+    color: $textColor;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);
+    line-height: 1.2;
+    margin: 0;
+  }
+}
+
+.weight-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
+  }
+
+  p {
+    font-size: 24px;
+    color: $textColor;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);
+    margin: 0;
+    line-height: 1.2;
+  }
+}
+
+.inventory-hotslots-container .inventory-slot:empty::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.inventory-hotslots-container .inventory-slot::after {
+  content: none !important;
+}
+
+.inventory-hotslots-container .inventory-slot * {
+  pointer-events: auto !important;
+}
+
+.item-slot-info-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  padding: 3px;
+  gap: 3px;
+  p {
+    font-size: 12px;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+}
+
+.item-slot-currency-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 3px;
+  p {
+    font-size: 14px;
+    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+  }
+}
+
+.item-slot-price-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-right: 3px;
+  p {
+    font-size: 14px;
+    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* ============================================
+   BORDES DE RAREZA
+   ============================================ */
+@if $enable-rarity-borders == true {
+  
+  .inventory-slot[data-rarity="normal"] {
+    border: $rarity-border-width $rarity-border-style $rarityNormal !important;
+    box-shadow: inset 0 0 5px rgba(85, 5, 13, 0.55);  //rgba(24, 1, 1, 0.4)
+  }
+
+  .inventory-slot[data-rarity="comun"] {
+    border: $rarity-border-width $rarity-border-style $rarityComun !important;
+    box-shadow: inset 0 0 5px rgba(30, 255, 0, 0.15);
+  }
+
+  .inventory-slot[data-rarity="raro"] {
+    border: $rarity-border-width $rarity-border-style $rarityRaro !important;
+    box-shadow: inset 0 0 5px rgba(0, 112, 221, 0.3);
+  }
+
+  .inventory-slot[data-rarity="epico"] {
+    border: $rarity-border-width $rarity-border-style $rarityEpico !important;
+    box-shadow: inset 0 0 5px rgba(163, 53, 238, 0.3);
+  }
+
+  .inventory-slot[data-rarity="legendario"] {
+    border: $rarity-border-width $rarity-border-style $rarityLegendario !important;
+    box-shadow: inset 0 0 5px rgba(255, 128, 0, 0.3);
+  }
+
+  .inventory-slot[data-rarity="ancestral"] {
+    border: $rarity-border-width $rarity-border-style $rarityAncestral !important;
+    box-shadow: inset 0 0 5px rgba(230, 204, 128, 0.3);
+  }
+
+  .inventory-slot[data-rarity="encantado"] {
+    border: $rarity-border-width $rarity-border-style #ffffff !important;
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.5);
+    animation: encantado-border 2s linear infinite;
+  }
+
+  .inventory-slot[data-rarity="divino"] {
+    border: $rarity-border-width $rarity-border-style $rarityDivino !important;
+    box-shadow: inset 0 0 8px rgba(224, 198, 117, 0.3);
+  }
+
+  .inventory-slot[data-rarity="maldito"] {
+    border: $rarity-border-width $rarity-border-style $rarityMaldito !important;
+    box-shadow: inset 0 0 8px rgba(56, 24, 24, 0.5);
+  }
+
+  @keyframes encantado-border {
+    0% { border-color: #ff0000; box-shadow: inset 0 0 12px rgba(255, 0, 0, 0.5); }
+    16.66% { border-color: #ff8000; box-shadow: inset 0 0 12px rgba(255, 128, 0, 0.5); }
+    33.33% { border-color: #ffff00; box-shadow: inset 0 0 12px rgba(255, 255, 0, 0.5); }
+    50% { border-color: #00ff00; box-shadow: inset 0 0 12px rgba(0, 255, 0, 0.5); }
+    66.66% { border-color: #0080ff; box-shadow: inset 0 0 12px rgba(0, 128, 255, 0.5); }
+    83.33% { border-color: #8000ff; box-shadow: inset 0 0 12px rgba(128, 0, 255, 0.5); }
+    100% { border-color: #ff0000; box-shadow: inset 0 0 12px rgba(255, 0, 0, 0.5); }
+  }
+}
+
+/* Si los bordes están desactivados, usar borde por defecto */
+@if $enable-rarity-borders == false {
+  .inventory-slot {
+    border-color: rgba(0, 0, 0, 0.2);
+    border-style: inset;
+    border-width: 1px;
+  }
+}
+
+/* ============================================
+   DEGRADADOS DE LABEL POR RAREZA
+   ============================================ */
+   /* Helper function para verificar si una rareza cumple el mínimo */
+  @function meets-min-tier($rarity) {
+    $min-value: map.get($rarity-tiers, $rarity-label-min-tier);
+    $current-value: map.get($rarity-tiers, $rarity);
+    @return $current-value >= $min-value;
+  }
+
+@if $enable-rarity-label-gradient == true {
+  /* NORMAL */
+  @if meets-min-tier('normal') {
+    .inventory-slot[data-rarity="normal"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(99, 2, 2, $gradient-top-opacity) 0%, 
+        rgba(99, 2, 2, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+  /* COMÚN */
+  @if meets-min-tier('comun') {
+    .inventory-slot[data-rarity="comun"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(30, 255, 0, $gradient-top-opacity) 0%, 
+        rgba(30, 255, 0, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+  /* RARO */
+  @if meets-min-tier('raro') {
+    .inventory-slot[data-rarity="raro"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(0, 112, 221, $gradient-top-opacity) 0%, 
+        rgba(0, 112, 221, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+  /* ÉPICO */
+  @if meets-min-tier('epico') {
+    .inventory-slot[data-rarity="epico"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(163, 53, 238, $gradient-top-opacity) 0%, 
+        rgba(163, 53, 238, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+  /* LEGENDARIO */
+  @if meets-min-tier('legendario') {
+    .inventory-slot[data-rarity="legendario"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(255, 128, 0, $gradient-top-opacity) 0%, 
+        rgba(255, 128, 0, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+
+  /* ANCESTRAL */
+  @if meets-min-tier('ancestral') {
+    .inventory-slot[data-rarity="ancestral"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(230, 204, 128, $gradient-top-opacity) 0%, 
+        rgba(230, 204, 128, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+
+  /* DIVINO */
+  @if meets-min-tier('divino') {
+    .inventory-slot[data-rarity="divino"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(224, 198, 117, $gradient-top-opacity) 0%, 
+        rgba(224, 198, 117, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+
+  /* MALDITO */
+  @if meets-min-tier('maldito') {
+    .inventory-slot[data-rarity="maldito"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(56, 24, 24, $gradient-top-opacity) 0%, 
+        rgba(56, 24, 24, $gradient-bottom-opacity) 100%) !important;
+    }
+  }
+
+  /* ENCANTADO - Degradado animado multicolor */
+  @if meets-min-tier('encantado') {
+    .inventory-slot[data-rarity="encantado"] .inventory-slot-label-box {
+      background: linear-gradient(180deg, 
+        rgba(255, 0, 0, $gradient-top-opacity) 0%, 
+        rgba(255, 0, 0, $gradient-bottom-opacity) 100%);
+      animation: encantado-label-gradient 3s linear infinite;
+    }
+
+    @keyframes encantado-label-gradient {
+      0% { 
+        background: linear-gradient(180deg, 
+          rgba(255, 0, 0, $gradient-top-opacity) 0%, 
+          rgba(255, 0, 0, $gradient-bottom-opacity) 100%);
+      }
+      16.66% { 
+        background: linear-gradient(180deg, 
+          rgba(255, 128, 0, $gradient-top-opacity) 0%, 
+          rgba(255, 128, 0, $gradient-bottom-opacity) 100%);
+      }
+      33.33% { 
+        background: linear-gradient(180deg, 
+          rgba(255, 255, 0, $gradient-top-opacity) 0%, 
+          rgba(255, 255, 0, $gradient-bottom-opacity) 100%);
+      }
+      50% { 
+        background: linear-gradient(180deg, 
+          rgba(0, 255, 0, $gradient-top-opacity) 0%, 
+          rgba(0, 255, 0, $gradient-bottom-opacity) 100%);
+      }
+      66.66% { 
+        background: linear-gradient(180deg, 
+          rgba(0, 128, 255, $gradient-top-opacity) 0%, 
+          rgba(0, 128, 255, $gradient-bottom-opacity) 100%);
+      }
+      83.33% { 
+        background: linear-gradient(180deg, 
+          rgba(128, 0, 255, $gradient-top-opacity) 0%, 
+          rgba(128, 0, 255, $gradient-bottom-opacity) 100%);
+      }
+      100% { 
+        background: linear-gradient(180deg, 
+          rgba(255, 0, 0, $gradient-top-opacity) 0%, 
+          rgba(255, 0, 0, $gradient-bottom-opacity) 100%);
+      }
+    }
+  }
+
+  .inventory-slot[data-rarity] .inventory-slot-label-text {
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    font-weight: 500;
+  }
+}
+
+/* Si está desactivado, usar el mainColor por defecto */
+@if $enable-rarity-label-gradient == false {
+  .inventory-slot-label-box {
+    background-color: $mainColor;
+  }
+}
+/* ============================================
+   RAREZA POR ESTRELLA
+   ============================================ */
+
+.rarity-star-wrapper {
+  position: absolute;
+  bottom: 22px;
+  left: 4px;
+  pointer-events: none;
+}
+
+.rarity-star {
+  font-size: 12px;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+.rarity-star-encantado {
+  animation: encantado-glow 3s linear infinite;
+}
+
+@keyframes encantado-glow {
+  0% { color: #ff0000; filter: drop-shadow(0 0 3px #ff0000); }
+  16.66% { color: #ff8000; filter: drop-shadow(0 0 3px #ff8000); }
+  33.33% { color: #ffff00; filter: drop-shadow(0 0 3px #ffff00); }
+  50% { color: #00ff00; filter: drop-shadow(0 0 3px #00ff00); }
+  66.66% { color: #0080ff; filter: drop-shadow(0 0 3px #0080ff); }
+  83.33% { color: #8000ff; filter: drop-shadow(0 0 3px #8000ff); }
+  100% { color: #ff0000; filter: drop-shadow(0 0 3px #ff0000); }
+}
+
+.rarity-encantado-text {
+  animation: encantado-animation 3s linear infinite;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+@keyframes encantado-animation {
+  0% { color: #ff0000; filter: drop-shadow(0 0 3px #ff0000); }
+  16.66% { color: #ff8000; filter: drop-shadow(0 0 3px #ff8000); }
+  33.33% { color: #ffff00; filter: drop-shadow(0 0 3px #ffff00); }
+  50% { color: #00ff00; filter: drop-shadow(0 0 3px #00ff00); }
+  66.66% { color: #0080ff; filter: drop-shadow(0 0 3px #0080ff); }
+  83.33% { color: #8000ff; filter: drop-shadow(0 0 3px #8000ff); }
+  100% { color: #ff0000; filter: drop-shadow(0 0 3px #ff0000); }
+}
+
+.tooltip-wrapper {
+  pointer-events: none;
+  display: flex;
+  background-color: $mainColor;
+  width: 200px;
+  padding: 8px;
+  flex-direction: column;
+  min-width: 200px;
+  color: $textColor;
+  font-family: $mainFont;
+  border-radius: 4px;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: inset;
+  border-width: 1px;
+  p {
+    font-size: 12px;
+    font-weight: 400;
+  }
+}
+
+.tooltip-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  p {
+    font-size: 15px;
+    font-weight: 400;
+  }
+}
+
+.tooltip-crafting-duration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  svg {
+    padding-right: 3px;
+  }
+  p {
+    font-size: 14px;
+  }
+}
+
+.tooltip-ingredients {
+  padding-top: 5px;
+}
+
+.tooltip-ingredient {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  img {
+    width: 28px;
+    height: 28px;
+    padding-right: 5px;
+  }
+}
+/* ============================================
+   HOTBAR
+   ============================================ */
+.hotbar-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  bottom: 2vh;
+}
+
+.hotbar-item-slot {
+  @extend .inventory-slot;
+  width: $gridSize;
+  height: $gridSize;
+}
+
+.hotbar-slot-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+/* ============================================
+   Notificacion de Items
+   ============================================ */
+
+.item-notification-container {
+  display: flex;
+  overflow-x: scroll;
+  flex-wrap: nowrap;
+  gap: 2px;
+  position: absolute;
+  bottom: 20vh;
+  left: 50%;
+  width: 100%;
+  margin-left: calc(50% - calc($gridSize/2));
+  transform: translate(-50%);
+}
+
+.item-notification-action-box {
+  width: 100%;
+  color: $textColor;
+  background-color: $secondaryColor;
+  text-transform: uppercase;
+  text-align: center;
+  border-top-left-radius: 0.25vh;
+  border-top-right-radius: 0.25vh;
+  font-family: $mainFont;
+  p {
+    font-size: 11px;
+    padding: 2px;
+    font-weight: 600;
+  }
+}
+
+.item-notification-item-box {
+  @extend .inventory-slot;
+  height: $gridSize;
+  width: $gridSize;
+}
+
+.durability-bar {
+  background: rgba(0, 0, 0, 0.5);
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+
+}
+
+.inventory-weightbar-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: calc(4 * (9vh + 0.22vh) + 4 * 2px);
+}
+
+.weight-bar {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px inset rgba(0, 0, 0, 0.1);
+  width: 30px;
+  height: 450px;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.weight-bar > div {
+  width: 100%;
+  transition: height 0.3s ease;
+  border-radius: 2px;
+}
+
+.transition-fade-enter {
+  opacity: 0;
+}
+
+.transition-fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.transition-fade-exit {
+  opacity: 1;
+}
+
+.transition-fade-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.transition-slide-up-enter {
+  transform: translateY(200px)
+}
+
+.transition-slide-up-enter-active {
+  transform: translateY(0px);
+  transition: all 200ms;
+}
+
+.transition-slide-up-exit {
+  transform: translateY(0px);
+}
+
+.transition-slide-up-exit-active {
+  transform: translateY(200px);
+  transition: all 200ms;
+}
