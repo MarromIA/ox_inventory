@@ -29,7 +29,9 @@ El objetivo de este fork es agregar **mejoras a un inventario que yá est totalm
 ### Indicador de Rareza (Opcional)
 
 <img width="325" height="280" alt="image" src="https://github.com/user-attachments/assets/4e3e7c55-81c5-4ad1-9fbe-57513ffcc8e5"/>
+
 <img width="580" height="1079" alt="image2" src="https://github.com/user-attachments/assets/12fa8a25-64c3-489e-8799-4eb1aee6b8cc" />
+
 <img width="781" height="1079" alt="image3" src="https://github.com/user-attachments/assets/0e43dbfd-16d1-4df2-be3e-487dedeac1a4" />
 
 
