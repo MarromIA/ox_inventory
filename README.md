@@ -28,9 +28,8 @@ El objetivo de este fork es agregar **mejoras a un inventario que yá est totalm
 
 ### Indicador de Rareza (Opcional)
 
-![Rarity System 1](rarity.gif)
-![Rarity System 2](rarity.gif)
-![Rarity System 3](rarity.gif)
+<img width="325" height="280" alt="image" src="https://github.com/user-attachments/assets/4e3e7c55-81c5-4ad1-9fbe-57513ffcc8e5"/>
+
 
 * Ahora los items pueden mostrar un **ícono de estrella** en la parte izquierda baja con el  `"rarity"` metadata key.
 * **Colores base**: 
